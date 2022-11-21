@@ -1,0 +1,266 @@
+<?php
+    		$subcategory_array = array(); 
+				$sql = "SELECT c.category_id,c.category_name, GROUP_CONCAT(sc.sub_category_name) AS sub_cat FROM category c LEFT JOIN sub_category sc ON c.category_id =  sc.category_id GROUP BY c.category_id ORDER BY c.category_id desc;";
+
+				$result = mysqli_query($con,$sql);
+				while ($row = $result->fetch_array()) {
+					$category_id = $row['category_id']; //category_id
+					$category_name = $row['category_name']; //category_name
+					$sub_category_name = $row['sub_cat']; //sub_category_name
+
+			?>
+		<tr>
+			<td class="text-center"><?php echo $category_id; ?></td>
+			<td class="text-center"><?php echo $category_name; ?></td>
+			<td class="text-center" style="max-width: 25vw;"><?php echo $sub_category_name; ?></td>
+			<td class="text-center">
+				<a class="btn btn-info text-white me-2" href="edit_category.php?categoryErr=&id=<?php echo $category_id; ?>">Edit</a>
+				<button class="btn btn-danger ms-2" data-bs-target="#myModal<?php echo $category_id;?>" data-bs-toggle="modal">Remove</button>
+				<div class="modal" id="myModal<?php echo $category_id?>">
+					<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+						    <h4 class="modal-title">Confirm delete?</h4>
+						    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+						<div class="modal-body">
+						   	Do you really want to delete category named "<?php echo $category_name?>"?<br>This will delete all product having category "<?php echo $category_name?>".<br><strong class="text-danger">Warning!</strong> This action cannot be undone.
+						</div>
+					    <div class="modal-footer">
+					    <a href="testcategory.php?action=delete&id=<?php echo $category_id; ?>" class="btn btn-danger">Delete</a>
+				        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+				      </div>
+
+				    </div>
+				    </div>
+				</div>
+			</td>
+		</tr>
+		<?php } ?>
+
+		//select code
+		/*
+	if ($_GET['action']="display") {
+		$sql = "SELECT c.category_id,c.category_name, GROUP_CONCAT(sc.sub_category_name) AS sub_cat FROM category c LEFT JOIN sub_category sc ON c.category_id =  sc.category_id GROUP BY c.category_id ORDER BY c.category_id desc;";
+
+		$result = mysqli_query($con,$sql);
+		while ($row = $result->fetch_array()) {
+			$category_array['category_id'] = $row['category_id']; //category_id
+			$category_array['category_name'] = $row['category_name'];; //category_name
+			$category_array['sub_category'] = $row['sub_cat'];; //sub_category_name
+
+			echo json_encode($category_array);
+		}
+	}
+*/
+
+<?php
+	//code to validate category
+	//-------------------------
+	$sql = "select category_name from category";
+	$result = mysqli_query($con,$sql);
+	$category_arr = array();
+	$category_error = array();
+	$sub_category = "";
+
+	$categoryErr = "";
+
+	while($row = mysqli_fetch_array($result)) {
+		array_push($category_arr,$row[0]);
+	}
+
+	$category = isset($_POST['category']) ? trim($_POST['category']) : "";
+	
+	$sub_category = isset($_POST['sub_category']) ? trim($_POST['sub_category']) : "";
+
+	if (in_array($category, $category_arr)) {
+		$errors['category_err'] = "Category already exists";	
+	} else if (empty($category)) {
+		$errors['category_err'] = "Category is empty";
+	}
+
+	if (!empty($errors)) {
+		$data['success'] = false;
+		$data['errors'] = $errors;
+	} else {
+		$data['success'] = true;
+		$data['message'] = 'Success!';
+	}
+	json_encode($data);
+
+?>
+
+<?php
+	//code to insert category
+	//-----------------------
+	if($_GET['action'] = "insert") {
+		// if(isset($_POST['submit'])) {			
+			if($errors == "") {
+				$sql1 = "INSERT INTO category(category_name) VALUES ('".$category."');";
+				
+				if(mysqli_query($con,$sql1)) {
+					$last_id = $con -> insert_id;
+					if(!empty($subcategory)) {
+						$subcategory_array = explode(",", $subcategory);
+
+						foreach ($subcategory_array as $value) {
+							if(!empty($value)) {
+								$sql2 = "INSERT INTO sub_category(category_id,sub_category_name) values('".$last_id."','".trim($value)."');";
+								$con->query($sql2);
+							}
+						}
+					} else {}
+				}
+			} else {}
+				
+		// }
+	}
+?>
+
+
+<?php/*
+	//code to insert category
+	//-----------------------
+	if($_GET['action'] = "insert") {
+		// if(isset($_POST['submit'])) {			
+			if($errors == "") {
+				$sql1 = "INSERT INTO category(category_name) VALUES ('".$category."');";
+				echo $sub_category;
+				if(mysqli_query($con,$sql1)) {
+					$last_id = $con -> insert_id;
+					if(!empty($sub_category)) {
+						$subcategory_array = explode(",", $subcategory);
+						$subcategory_array = array_unique($subcategory_array);
+						print_r($subcategory_array);
+						foreach ($subcategory_array as $value) {
+							if(!empty($value)) {
+								$sql2 = "INSERT INTO sub_category(category_id,sub_category_name) values('".$last_id."','".trim($value)."');";
+								$con->query($sql2);
+							}
+						}
+					} else {}
+				}
+			} else {}
+				
+		// }
+	}*/
+?>
+<?php/*
+	//code to edit category
+	//-----------------------
+	if($_GET['action'] === "edit") {
+		
+		if(isset($_POST['submit'])) {
+
+			// code for retriving old sub category------------------
+			$oldcategory_array = array();
+
+			$sql3 = "SELECT sub_category_name FROM sub_category where category_id='".$_GET['id']."';";
+			$result2 = $con -> query($sql3);
+			echo "old array:<hr>";
+			while ($row = $result2->fetch_array()) {
+				array_push($oldcategory_array,$row[0]);	
+			}
+			echo "<pre>";
+			print_r($oldcategory_array);
+			echo "</pre>";
+
+			$oldcategory_string = implode(",", $oldcategory_array);
+
+			//-----------------------------------------------------
+			//converting selected subcategories to array
+			if(!empty($subcategory)) {
+				$subcategory_array = explode(",", $subcategory);
+			}
+
+			// echo $subcategory."<br>";
+			// print_r(array_diff($subcategory_array,$oldcategory_array));
+			// echo "<br>";
+
+			// code to update category----------------------------------------
+			if($categoryErr == "" ) {
+				$sql1 = "update category set category_name = '".$_POST['category']."' AND category_id = '".$_GET['id']."';";
+
+				if(mysqli_query($con,$sql1)) {
+					header("location: category.php");
+				}
+			} else if (!empty(array_diff($oldcategory_array,$subcategory_array)) || !empty(array_diff($subcategory_array,$oldcategory_array))) {
+			// code to update subcategory--------------------------------------
+				$itemremoved = array_diff($oldcategory_array,$subcategory_array);
+				$itemadded = array_diff($subcategory_array,$oldcategory_array);
+				print_r($itemadded);
+				
+				if(!empty($itemremoved)) {
+					foreach ($itemremoved as $value) {
+						if(!trim(empty($value))) {
+							$sql = "delete from sub_category where sub_category_name='".trim($value)."' and category_id='".$_GET['id']."'";
+							$con -> query($sql);
+						}
+					}
+				} 
+				if(!empty($itemadded)) {
+					foreach ($itemadded as $value) {
+						if(!trim(empty($value))) {
+							$sql = "insert into sub_category(category_id,sub_category_name) values('".$_GET['id']."','".trim($value)."');";
+							echo $sql;
+							$con -> query($sql);
+						}
+					}
+				}
+				header("location: category.php");
+			} else {
+				header("location: edit_category.php?categoryErr=".$categoryErr."&id=".$_GET['id']);
+			}
+		} 
+
+	}*/
+?>
+<?php/*
+	//code to delete category
+	//-----------------------
+	if($_GET['action'] === "delete") {
+
+		$sql = "DELETE FROM category where category_id='".$_GET['id']."'";
+		$sql1 = "DELETE FROM sub_category where category_id='".$_GET['id']."'";
+
+		if(mysqli_query($con,$sql) && mysqli_query($con,$sql1)) {
+			header("location: category.php");
+		}
+	}*/
+?>
+
+<?php/*
+	//code to validate category
+	//-------------------------
+	$sql = "select category_name from category";
+	$result = mysqli_query($con,$sql);
+	$category_arr = array();
+	$category_error = array();
+	$sub_category = "";
+	$categoryErr = "";
+	$errors = [];
+
+	while($row = mysqli_fetch_array($result)) {
+		array_push($category_arr,$row[0]);
+	}
+
+	$category = isset($_POST['category']) ? trim($_POST['category']) : "";
+	
+	$sub_category = isset($_POST['subcategory']) ? trim($_POST['subcategory']) : "";
+
+	if (in_array($category, $category_arr)) {
+		$errors['category_err'] = "Category already exists";	
+	} else if (empty($category)) {
+		$errors['category_err'] = "Category is empty";
+	}
+
+	if (!empty($errors)) {
+		$data['success'] = false;
+		$data['errors'] = $errors;
+	} else {
+		$data['success'] = true;
+		$data['message'] = 'Success!';
+	}
+	//echo json_encode($data);
+	*/
+?>
