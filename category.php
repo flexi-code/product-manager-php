@@ -89,7 +89,8 @@
 								</td>
 							</tr>
 								`;
-							$("tbody")[0].insertAdjacentHTML('beforebegin', html);
+							var tbody = $("tbody").length;
+							$("tbody")[tbody-1].insertAdjacentHTML('afterbegin', html);
 						});
 					}
 				});

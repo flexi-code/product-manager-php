@@ -10,15 +10,16 @@
     $sub_category = "";
 	$categoryErr = "";
 	$error = [];
-	$file_string = "";
 
 	while($row = mysqli_fetch_array($result)) {
 		array_push($category_arr,$row[0]);
 	}
 
 	$category = isset($_POST['category']) ? trim($_POST['category']) : "";
+	$data['category'] = $category;
 	
 	$sub_category = isset($_POST['subcategory']) ? trim($_POST['subcategory']) : "";
+	$data['sub_category'] = $sub_category;
 
 	if (in_array($category, $category_arr)) {
 		$errors['category_err'] = "Category already exists";	
@@ -33,8 +34,6 @@
 		$data['success'] = true;
 		$data['message'] = 'Success!';
 	}
-    echo json_encode($data);
-
     //code to insert category
 	//-----------------------
     $subcategory_array = [];
@@ -44,6 +43,8 @@
     			$sql1 = "INSERT INTO category (category_name) VALUES ('".$category."');";
 			    if($con->query($sql1)) {
 				    $last_id = $con -> insert_id;
+					$data['id'] = $last_id;
+					echo json_encode($data);
                     if(!empty($sub_category)) {
                         $subcategory_array = explode(",", $sub_category);
                         $subcategory_array = array_unique($subcategory_array);
@@ -55,8 +56,8 @@
                         }
                     }
 					?>
-						
-				<?php
+
+<?php
 				}
 			}		
 		// }
