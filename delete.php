@@ -1,4 +1,4 @@
-<?php
+	<?php
 	include_once "connection.php";
 	$sql = "select pr_image from product where pr_id=".$_GET['id'].";";
 	echo $sql;

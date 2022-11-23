@@ -17,12 +17,37 @@
 
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"/>
+
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	<style>
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		*::-webkit-scrollbar {
+		  display: none;
+		}
+
+		/* Hide scrollbar for IE, Edge and Firefox */
+		.example {
+		  -ms-overflow-style: none;  /* IE and Edge */
+		  scrollbar-width: none;  /* Firefox */
+		}
+
+		.select2 .select2-search__field {
+			font-family: Arial, FontAwesome !important;
+		}
+
+		#product_catalog {
+			max-height: 92.9vh;
+			overflow-y: scroll;
+		}
+	</style>
+
 </head>
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="#">Navbar</a>
+		<a class="navbar-brand" href="#">Product Manager</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
 			aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -30,9 +55,9 @@
 		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 			<div class="navbar-nav">
 				<a class="nav-item nav-link active" href="index.php">Home</span></a>
-				<a class="nav-item nav-link" href="insert.php?action=insert&error=">Insert</a>
-				<a class="nav-item nav-link" href="category.php?error=">View categories</a>
-				<a class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#myModal">Add category</a>
+				<a class="nav-item nav-link active" href="insert.php?action=insert">Insert</a>
+				<a class="nav-item nav-link active" href="category.php">View categories</a>
+				<a class="nav-item nav-link active" data-bs-toggle="modal" data-bs-target="#myModal">Add category</a>
 			</div>
 			<div class="modal fade" id="myModal">
 				<div class="modal-dialog modal-dialog-centered">
@@ -66,8 +91,8 @@
 								</div>
 						</div>
 						<div class="modal-footer">
-							<input type="submit" class="btn btn-success" value = "Submit">
-							<button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="close">Close</button>
+							<input type="submit" class="btn btn-success" value = "Submit" id="submit">
+							<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
 						</div>
 						</form>
 						<script>
@@ -78,6 +103,10 @@
 										subcategory: $("#subcategory").val(),
 									};
 
+									var ins={
+										rec_ins: "GO TO HELL",
+									};
+
 									$.ajax({
 										type: "POST",
 										url: "add_category.php?action=insert",
@@ -85,7 +114,6 @@
 										dataType: "json",
 										encode: true,
 									}).done(function (data) {
-
 										if (!data.success) {
 											if (data.errors.category_err) {
 												$("#categoryErr").append(
@@ -94,17 +122,26 @@
 												);
 											}
 										} else {
-											setTimeout(() => {
-												$("#close").click();	
-											}, 100);
+											setTimeout(() => {		
+												$(".btn-close").click();	
+											}, 200);
+											$.ajax({
+												type: "POST",
+												url: "category.php",
+												data: ins,
+												dataType: "json",
+												encode: true,
+											}).done(function(data) {
+												alert("record inserted");
+											});
 										}
 									});
-									$("#add_cat").submit(function () {
+									$("#submit").click(function () {
 										$("#categoryErr").empty();
 									});
 									event.preventDefault();
-									$("#category").val() = " ";
-									$("#subcategory").val() = " ";
+									$("#category").empty();
+									$("#subcategory").empty();
 								});
 							});
 						</script>

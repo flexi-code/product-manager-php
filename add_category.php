@@ -41,7 +41,7 @@
 	if($_GET['action'] = "insert") {
 		// if(isset($_POST['submit'])) {			!!! toxic code do not uncomment !!!
 			if(empty($errors)) {
-    			$sql1 = "INSERT INTO category(category_name) VALUES ('".$category."');";
+    			$sql1 = "INSERT INTO category (category_name) VALUES ('".$category."');";
 			    if($con->query($sql1)) {
 				    $last_id = $con -> insert_id;
                     if(!empty($sub_category)) {
@@ -53,9 +53,12 @@
                                 $con->query($sql2);
                             }
                         }
-                    } else {}
+                    }
+					?>
+						
+				<?php
 				}
-			} else {}		
+			}		
 		// }
 	}
 ?>

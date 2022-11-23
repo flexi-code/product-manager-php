@@ -1,82 +1,144 @@
+<div class="px-3 bg-light">
 <?php
 	include "header.php";
+?>
+</div>
+<?php
 	include "connection.php";
 ?>
-<div class="container-fluid">
-  <table class="table table-striped table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th class="text-center">Product name</th>
-			<th class="text-center">Product description</th>
-			<th class="text-center">Price</th>
-			<th class="text-center">Category</th>
-			<th class="text-center">Product Image</th>
-			<th class="text-center">Created at</th>
-			<th class="text-center">Updated at</th>
-			<th class="text-center">Status</th>
-			<th class="text-center">Quantity</th>
-			<th class="text-center">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-    	<?php
-			$sql = "SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(c.category_name) as c_name,p.pr_image,p.created_at,p.updated_at,p.pr_status,p.pr_quantity FROM product p LEFT JOIN product_category cp ON cp.p_id = p.pr_id LEFT JOIN category c ON c.category_id = cp.c_id GROUP BY p.pr_id ORDER BY p.pr_id DESC;";
-			$result = mysqli_query($con,$sql);
-			while($row = mysqli_fetch_assoc($result)) {
-				$id = ($row["pr_id"])? $row["pr_id"] : "no value";
-				$name = ($row["pr_name"])? $row["pr_name"] : "no value";
-				$description = ($row["pr_description"])? $row["pr_description"] : "no value";
-				$price = ($row["pr_price"])? $row["pr_price"] : "no value";
-				$category = ($row["c_name"])? $row["c_name"] : "no value";
-				$image = ($row["pr_image"])? $row["pr_image"] : "";
-				$created_at = ($row["created_at"])? $row["created_at"] : "no value";
-				$updated_at = ($row["updated_at"])? $row["updated_at"] : "no value";
-				$status = ($row["pr_status"])? $row["pr_status"] : "no value";
-				$quantity = ($row["pr_quantity"])? $row["pr_quantity"] : "no value";
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.js-basic-example-multiple').select2();
+		$('.js-example-placeholder-multiple').select2();
+	
 
-				$category = explode(",",$category);
-				sort($category);
-				$category = implode(",", $category);
-				//echo $category;
-		?>
-      <tr class="table-row">
-        <td class="text-center"><?php echo $name;?>	</td>
-        <td class="text-center"><?php echo $description;?></td>
-        <td class="text-center"><?php echo $price;?></td>
-        <td class="text-center"><?php echo $category;?></td>
-        <td class="text-center"><?php if($image) {?><img src="product/<?php echo $image;?>" width="120" height="70"/><?php }else{}?></td>
-        <td class="text-center"><?php echo $created_at;?></td>
-        <td class="text-center"><?php echo $updated_at;?></td>
-        <td class="text-center"><?php echo $status;?></td>
-        <td class="text-center"><?php echo $quantity;?></td>
-        <td class="text-center">
-        	<a href="edit.php?action=edit&error=&id=<?php echo $id;?>" class="btn btn-primary me-2">Edit</a>
-        	<button type="button" class="btn bg-danger ms-2 btn-dark"  data-bs-toggle="modal" data-bs-target="#myModal<?php echo $id?>">Delete
-        	</button>
-        	<div class="modal" id="myModal<?php echo $id?>">
-					<div class="modal-dialog modal-dialog-centered">
-					  <div class="modal-content">
-						      <div class="modal-header">
-						        <h4 class="modal-title">Confirm delete?</h4>
-						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-						      </div>
-						      <div class="modal-body">
-						      	Do you really want to delete record for "<?php echo $name?>" ?
-						      </div>
-					      <div class="modal-footer">
-					      	<a href="test.php?action=delete&id=<?php echo $id;?>" class="btn btn-danger">Delete</a>
-					        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-					      </div>
+	var data0 = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
 
-					    </div>
-					  </div>
+	var data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+
+	var data1 = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+
+		$("#product").select2({
+	        data: data,
+	        multiple: true
+    	});
+
+		$("#Category").select2({
+	        data: data,
+	        multiple: true
+    	});
+    	$("#Sub_category").select2({
+	        data: data1,
+	        multiple: true
+    	});
+	});
+</script>
+<div class="container-fluid d-flex justify-content-right" style="margin:0;padding:0;box-sizing:border-box;">
+	<div id="sidebar" class="bg-warning	px-3" style="max-width: 20%; min-height: 92.9vh; position: relative;">
+		<h3 class=" fw-bold text-white d-flex justify-content-center">
+			Dashboard
+		</h3>
+		<hr class="text-dark">
+			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
+			data-placeholder="&#xF291;  Search product" id="product" style="font-family:Arial, FontAwesome">
+				<option value="option1">All</option>
+			</select>
+			<br>
+			<br>
+			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
+			data-placeholder="&#xF468;  Search category" id="Category" style="font-family:Arial, FontAwesome">
+				<option value="option1">All</option>
+			</select>
+			<br>
+			<br>
+			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
+			data-placeholder="&#xe4e6;  Search sub category" id="Sub_category" style="font-family:Arial, FontAwesome">
+				<option value="option1">All</option>
+			</select>
+			<br>
+			<br>
+			<button type="button" id="search" class="btn btn-success btn-block" style="min-width: 100%;">Search</button>
+	</div>
+	<div class="container-fluid bg-info px-3">
+		<span class=" display-5 fw-bold d-flex text-white justify-content-center">
+			Welcome to product Manager
+		</span>
+		<hr class="text-dark">
+
+		<div class="container bg-white d-flex flex-column" id="product_catalog">
+			<span class="container  my-2" style="min-width: fit-content; max-width: 80vw; min-height: 78vh;">
+				<p class="fw-bold my-2">#product1</p>	
+				<span class="d-flex flex-column">
+					<h6 class="fw-bold">Category:  </h6>
+					<div class="d-flex flex-row">
+					<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
+					<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
+					<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
 					</div>
-        </td>
-      </tr>
-  	<?php } ?>
-    </tbody>
-  </table>
-</div>
+					<div class="d-flex flex-row">
 
+					</div>
+				</span>
+				<span class="d-flex flex-column">
+					<h6 class="fw-bold">Sub-Category:  </h6>
+					<div class="d-flex flex-row">
+						<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
+						<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
+						<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">#Category1</p>
+					</div>
+					<div class="d-flex flex-row">
+						
+					</div>
+				</span>
+				<hr>
+				<span class="container row">
+					<img src="product_image.jpg" class="col-3 rounded thumbnail" style="max-height: 40vh; max-width: 40vh">
+					<span class="col-9 d-flex row" style="min-width: fit-content; min-height: 100%;">
+						<span class="row">
+							<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+								<h6 class="fw-bold">Price</h6>
+								<h6>500 Rs.</h6>
+							</div>
+							<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+								<h6 class="fw-bold">Quantity</h6>
+								<h6>9</h6>
+							</div>
+						</span>
+						<span class="row">
+							<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+								<h6 class="fw-bold">Created at</h6>
+								<h6>03/08/2000</h6>
+							</div>
+							<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+								<h6 class="fw-bold">Updated at</h6>
+								<h6>07/08/2000</h6>
+							</div>
+						</span>
+						<span class="row">
+							<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+								<h6 class="fw-bold">Status</h6>
+								<h6>Draft</h6>
+							</div>
+						</span>
+					</span>
+					<span class="col container">
+						<h6>Description</h6>
+						<span class="container px-3">
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ullamcorper ligula nec arcu dapibus, non maximus nisi porttitor. Vivamus ornare hendrerit leo vel commodo. Aliquam erat volutpat. Nulla et cursus ipsum. Mauris eleifend metus sed lorem viverra aliquam. Nam eget elementum velit, a sollicitudin mi. Vivamus ac lorem molestie, mollis massa in, rhoncus ipsum. pellentesque placerat est quis suscipit venenatis. Sed tempor, odio sed egestas suscipit, leo est tristique dolor, a volutpat felis lectus id magna. Aliquam erat volutpat.</p>
+
+							<p>Cras cursus, neque id dignissim viverra, libero erat vehicula risus, quis eleifend mi risus ac nisl. praesent sagittis iaculis metus. Donec vel pretium nibh. Cras sit amet auctor leo, eget vulputate nisi. Cras lobortis iaculis erat at tristique. Integer felis erat, vehicula quis nulla vel, aliquam vulputate lorem. Curabitur commodo id nisl vitae dictum. In pellentesque pharetra velit id mollis. Nam dignissim vestibulum blandit. Etiam vehicula dictum sem in vehicula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas tincidunt facilisis fermentum. Nunc tempor sagittis nibh eget aliquam. Ut a suscipit metus, imperdiet condimentum nisi. Mauris pellentesque congue sem, vitae mattis lectus consequat et. praesent sed molestie felis, non accumsan purus.</p>
+
+							<p>Duis a est accumsan, ullamcorper lacus sit amet, vulputate purus. Duis luctus augue vel pharetra dignissim. Nullam consectetur tellus metus, id ultrices nisl feugiat sit amet. Etiam tempor bibendum tellus, vitae volutpat purus fermentum ut. Nullam congue ornare risus, in dignissim enim ultricies fermentum. In eget dui nec odio gravida fermentum id at sem. Nullam sagittis placerat ligula, non rhoncus nulla consequat vel. Maecenas bibendum, odio at dignissim tincidunt, sem nisi euismod diam, in tristique tortor odio vel eros. Fusce diam orci, blandit ac semper et, mollis at nibh. Donec convallis vitae velit eu ullamcorper.</p>
+
+							<p>Mauris viverra arcu non blandit blandit. Quisque consequat, metus ut luctus vehicula, ex nulla feugiat ipsum, fringilla tincidunt nulla lorem nec urna. Cras arcu lacus, semper vitae mattis at, venenatis ac libero. Etiam sit amet eros vel odio ullamcorper bibendum at a tellus. Aenean lorem ligula, laoreet at eros sed, porta blandit nisi. Maecenas dictum nec libero feugiat imperdiet. Suspendisse tincidunt ligula ac risus ultricies, in ultricies tortor dignissim. Nunc et vulputate neque. pellentesque a nibh dolor. Morbi et cursus ligula. Morbi et scelerisque orci. phasellus sagittis, ex nec ultrices ultricies, lorem nisi ultrices nisl, ut malesuada mi ligula vel mauris.</p>
+
+							<p>Aenean eu odio tristique, maximus tortor quis, sodales magna. Nunc nec condimentum est. Suspendisse potenti. Duis fermentum mollis tortor vel malesuada. pellentesque sit amet convallis nunc. Aenean sit amet pharetra lorem. Mauris aliquet velit et dolor ultricies, et elementum arcu aliquet. In in sagittis ligula. Donec fringilla, dui vel gravida hendrerit, eros neque efficitur felis, quis dignissim felis nunc vitae tortor. Quisque in erat at elit tincidunt efficitur at ut libero. proin leo ipsum, consectetur et faucibus vitae, fermentum at tellus. Nulla sem orci, vulputate lobortis nulla viverra, consectetur aliquam ex.</p>
+						</span>
+					</span>
+				</span>
+			</span>
+		</div>
+	</div>
+</div>
 </body>
 </html>
