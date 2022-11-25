@@ -44,7 +44,6 @@
 			    if($con->query($sql1)) {
 				    $last_id = $con -> insert_id;
 					$data['id'] = $last_id;
-					echo json_encode($data);
                     if(!empty($sub_category)) {
                         $subcategory_array = explode(",", $sub_category);
                         $subcategory_array = array_unique($subcategory_array);
@@ -55,6 +54,7 @@
                             }
                         }
                     }
+					echo json_encode($data);
 					?>
 
 <?php

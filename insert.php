@@ -3,8 +3,8 @@
 	include "connection.php";
 
 	$error_array = array();
-	$error_string = $_GET['error'];
-	$error_array = explode(",",$error_string);
+	// $error_string = $_GET['error'];
+	// $error_array = explode(",",$error_string);
 
 	foreach ($error_array as $code) {
 		switch($code) {
@@ -22,22 +22,24 @@
 		}		
 	}
 ?>
-<form method="POST" class=" container container-md input-form" enctype="multipart/form-data" id="form" action="test.php?action=insert">
+<form method="POST" class="container container-md input-form" enctype="multipart/form-data" id="form">
 	<h1 class="display-4 text-center row mw-100 d-flex justify-content-center">Data Entry Form</h1>
 	<div class="container mw-100">
 		<div class="column px-5">
 
-			<span class="form-input-group my-3 inp-grp d-flex w-100">
+			<span class="form-input-group my-3 inp-grp">
 				<label for="name">Name</label>
 				<input type="text" name="name" id="name" class="form-control w-100" value="<?php echo isset($name) ? $name : "";?>" autocomplete="off">
 				<span class="fw-bolder text-danger"> <?php echo isset($nameErr) ? $nameErr : "";?></span>
 			</span>
+			<br>
 
 			<span class="form-input-group my-3 inp-grp">
 				<label for="desc">Description</label>
 				<textarea name="desc" id="desc" rows="4" class="form-control mh-15 mw-25" autocomplete="off" style="resize:none;"><?php echo isset($desc) ? $desc : "";?></textarea>		
 				<span class="fw-bolder text-danger"> <?php echo isset($descErr) ? $descErr : "";?></span>
 			</span>
+			<br>
 
 			<span class="form-input-group my-3 inp-grp">
 				<label for="price">Price</label>
@@ -45,6 +47,8 @@
 				<span class="fw-bolder text-danger fade show"></span>
 				<span class="fw-bolder text-danger"> <?php echo isset($priceErr) ? $priceErr : "";?></span>
 			</span>
+			<br>
+
 			<span class="form-input-group my-3">
 				<label>Category</label><br>
 				<?php
@@ -65,6 +69,7 @@
 				<?php } ?>
 				<span class="fw-bolder text-danger"> <?php echo isset($categoryErr) ? $categoryErr : "";?></span>
 			</span>
+			<br>
 		</div>
 
 		<div class="column px-5">
@@ -73,7 +78,7 @@
 				<input type="file" class="form-control" name="image" id="file" autocomplete="off">	
 			</span>
 				<span class="fw-bolder text-danger"> <?php echo isset($imageErr) ? $imageErr : "";?></span>
-			<br>
+			<br><br>
 			<span class="form-input-group my-3">
 				<label>Status</label>
 				<span class="form-inline">
@@ -102,5 +107,29 @@
 		<input type="submit" value="submit" name="submit" class="form-control btn btn-primary mw-20">
 	</div>
 </form>
+<script>
+	$(document).ready(function() {
+		$("#form").submit(function() {
+			var formdata = {
+				name : $("#name").val(),
+				description : $("#desc").val(),
+				price : $("#price").val(),
+				image : $("#image").val(),
+				category : $("input[name='category']").val(),
+				status : $("input[name='status']").val(),
+				quantity : $("#quantity").val(),
+			};
+
+			$.ajax({
+				type:"POST",
+				url:"add_product.php",
+				data:formdata,
+				dataType:"json",
+			}).done(function (data) {
+				console.log(data);
+			});
+		});
+	});
+</script>
 </body>
 </html>

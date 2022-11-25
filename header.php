@@ -17,20 +17,31 @@
 
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"/>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet" />
 
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	<script src="script.js" type="text/js" aync defer></script>
 
 	<style>
 		/* Hide scrollbar for Chrome, Safari and Opera */
 		*::-webkit-scrollbar {
-		  display: none;
+			display: none;
+		}
+
+		* {
+			-ms-overflow-style: none;
+			/* IE and Edge */
+			scrollbar-width: none;
+			/* Firefox */
 		}
 
 		/* Hide scrollbar for IE, Edge and Firefox */
 		.example {
-		  -ms-overflow-style: none;  /* IE and Edge */
-		  scrollbar-width: none;  /* Firefox */
+			-ms-overflow-style: none;
+			/* IE and Edge */
+			scrollbar-width: none;
+			/* Firefox */
 		}
 
 		.select2 .select2-search__field {
@@ -55,7 +66,9 @@
 		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 			<div class="navbar-nav">
 				<a class="nav-item nav-link active" href="index.php">Home</span></a>
-				<a class="nav-item nav-link active" href="insert.php?action=insert">Insert</a>
+				<a class="nav-item nav-link active" href="insert.php">Insert</a>
+				<a class="nav-item nav-link active" href="edit_product.php?action=edit&error=">Edit</a>
+				<a class="nav-item nav-link active" href="delete_product.php?action=delete&error=">Delete</a>
 				<a class="nav-item nav-link active" href="category.php">View categories</a>
 				<a class="nav-item nav-link active" data-bs-toggle="modal" data-bs-target="#myModal">Add category</a>
 			</div>
@@ -91,11 +104,104 @@
 								</div>
 						</div>
 						<div class="modal-footer">
-							<input type="submit" class="btn btn-success" value = "Submit" id="submit">
+							<input type="submit" class="btn btn-success" value="Submit" id="submit">
 							<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
 						</div>
 						</form>
 						<script>
+							function show() {
+								$.ajax({
+									type: "get",
+									url: "display_category.php?action=display",
+									dataType: "json",
+								}).done(function (data) {
+									if (data) {
+										data.forEach(item => {
+											html = `
+                <tr>
+                    <td class="text-center">${item.category_id}</td>
+                    <td class="text-center">${item.category_name}</td>
+                    <td class="text-center">${item.sub_cat}</td>
+                    <td class="d-flex justify-content-around">
+                        <button data-bs-toggle="modal" data-bs-target="#editmodal${item.category_id}" class="btn btn-info text-white" onclick="edit_fun(${item.category_id},'${item.category_name}','${item.sub_cat}')">Edit</button>
+<div class="modal fade" id="editmodal${item.category_id}">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h4 class="modal-title">Edit category</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+                <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" placeholder=" " id="category_name_edit${item.category_id}"
+                        autocomplete="off" name="category_name">
+                    <span id="catErr" class="fw-bolder text-danger"></span>
+                    <label for="category_name_edit">Category name</label>
+
+                </div>
+                <div class="form-floating mb-3 mt-3">
+                    <textarea type="text" class="form-control" placeholder=" " id="subcategory_edit${item.category_id}"
+                        name="subcategory_name" style="resize:none; height:5em;"
+                        autocomplete="off"></textarea>
+                    <span id="subcatErr" class="fw-bolder text-warning">Note: Duplicate subcategory will not be entered in database.</span>
+                    <label for="subcategory_edit">Sub category name</label>
+                </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info text-white" id="edit-btn${item.category_id}">Edit</button>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+                        <button data-bs-toggle="modal" data-bs-target="#delmodal${item.category_id}" class="btn btn-danger" onclick="delete_fun(${item.category_id},'${item.category_name}')">Delete</button>
+<div class="modal fade" id="delmodal${item.category_id}">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h4 class="modal-title">Modal Heading</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+            Do you really want to delete <b id="category_name_delete"></b> having id <b
+                id="category_id_delete"></b> and its all subcategories ?<br>
+            <strong class="text-danger">Warning ! This action cannot be undone</strong>
+        </div>
+
+        <div class="modal-footer">
+            <a type="button" class="btn btn-danger" id="delete-btn${item.category_id}">Delete</a>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="close">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+                    </td>
+                </tr>
+                    `;
+											$("tbody")[0].insertAdjacentHTML('afterbegin', html);
+										});
+									}
+								});
+							}
+
+							function hide() {
+								$('tbody').empty();
+							}
+
+							function refresh() {
+								setTimeout(() => {
+									hide();
+								}, 450);
+								setTimeout(() => {
+									show();
+								}, 550)
+							}
+
 							$(document).ready(function () {
 								$("#add_cat").submit(function (event) {
 									var formData = {
@@ -103,7 +209,7 @@
 										subcategory: $("#subcategory").val(),
 									};
 
-									var ins={
+									var ins = {
 										rec_ins: "DATA INSERTED",
 									};
 
@@ -122,88 +228,18 @@
 												);
 											}
 										} else {
-											setTimeout(() => {		
+											setTimeout(() => {
 												$(".btn-close").click();
-												
-												data.forEach(item => {
-							html = `
-		<tr>
-			<td class="text-center">${item.id}</td>
-			<td class="text-center">${item.category}</td>
-			<td class="text-center">${item.sub_category}</td>
-			<td class="d-flex justify-content-around">
-			<button data-bs-toggle="modal" data-bs-target="#editmodal${item.id}" class="btn btn-info text-white" onclick="edit_fun(${item.id},'${item.category}','${item.sub_category}')">Edit</button>
-		<div class="modal fade" id="editmodal${item.id}">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-
-					<div class="modal-header">
-						<h4 class="modal-title">Edit category</h4>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-					</div>
-
-					<div class="modal-body">
-							<div class="form-floating mb-3 mt-3">
-								<input type="text" class="form-control" placeholder=" " id="category_name_edit${item.id}"
-									autocomplete="off" name="category_name">
-								<span id="catErr" class="fw-bolder text-danger"></span>
-								<label for="category_name_edit">Category name</label>
-
-							</div>
-							<div class="form-floating mb-3 mt-3">
-								<textarea type="text" class="form-control" placeholder=" " id="subcategory_edit${item.id}"
-									name="subcategory_name" style="resize:none; height:5em;"
-									autocomplete="off"></textarea>
-								<span id="subcatErr" class="fw-bolder text-warning">Note: Duplicate subcategory will not be entered in database.</span>
-								<label for="subcategory_edit">Sub category name</label>
-							</div>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-info text-white" id="edit-btn${item.id}">Edit</button>
-						<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<button data-bs-toggle="modal" data-bs-target="#delmodal${item.id}" class="btn btn-danger" onclick="delete_fun(${item.id},'${item.category}')">Delete</button>
-		<div class="modal fade" id="delmodal${item.id}">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-
-					<div class="modal-header">
-						<h4 class="modal-title">Modal Heading</h4>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-					</div>
-
-					<div class="modal-body">
-						Do you really want to delete <b id="category_name_delete"></b> having id <b
-							id="category_id_delete"></b> and its all subcategories ?<br>
-						<strong class="text-danger">Warning ! This action cannot be undone</strong>
-					</div>
-
-					<div class="modal-footer">
-						<a type="button" class="btn btn-danger" id="delete-btn${item.id}">Delete</a>
-						<button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="close">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-								</td>
-							</tr>
-								`;
-												var count = $("tbody").length;
-												$("tbody")[count-1].insertAdjacentHTML('beforeend',html);
+												refresh();
 											}, 200);
-									})
-								}
-							});
+										}
+									});
 									$("#submit").click(function () {
 										$("#categoryErr").empty();
 									});
 									event.preventDefault();
 									$("#category").empty();
-									$("#subcategory").prop("value","");
+									$("#subcategory").prop("value", "");
 								});
 							});
 						</script>

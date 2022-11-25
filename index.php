@@ -34,7 +34,7 @@
 	});
 </script>
 <div class="container-fluid d-flex justify-content-right" style="margin:0;padding:0;box-sizing:border-box;">
-	<div id="sidebar" class="bg-warning	px-3" style="max-width: 20%; min-height: 92.9vh; position: relative;">
+	<div id="sidebar" class="bg-warning	px-3" style="min-width: 22%; min-height: 92.9vh; position: relative;">
 		<h3 class=" fw-bold text-white d-flex justify-content-center">
 			Dashboard
 		</h3>
