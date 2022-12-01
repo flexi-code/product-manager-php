@@ -25,7 +25,7 @@
                 <tr>
                     <td class="text-center">${item.category_id}</td>
                     <td class="text-center">${item.category_name}</td>
-                    <td class="text-center">${item.sub_cat}</td>
+                    <td class="text-center">${item.sub_cat.split(" ").reverse().join(" ")}</td>
                     <td class="d-flex justify-content-around">
                         <button data-bs-toggle="modal" data-bs-target="#editmodal${item.category_id}" class="btn btn-info text-white" onclick="edit_fun(${item.category_id},'${item.category_name}','${item.sub_cat}')">Edit</button>
 <div class="modal fade" id="editmodal${item.category_id}">
@@ -158,11 +158,9 @@
 							setTimeout(() => {
 								$(".btn-close").click();
 							}, 350);
-							alert("delete wala hide");
 							setTimeout(() => {
 								hide();
 							}, 450);
-							alert("delete wala show");
 							setTimeout(() => {
 								show();
 							}, 550)

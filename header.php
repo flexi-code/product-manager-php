@@ -67,8 +67,6 @@
 			<div class="navbar-nav">
 				<a class="nav-item nav-link active" href="index.php">Home</span></a>
 				<a class="nav-item nav-link active" href="insert.php">Insert</a>
-				<a class="nav-item nav-link active" href="edit_product.php?action=edit&error=">Edit</a>
-				<a class="nav-item nav-link active" href="delete_product.php?action=delete&error=">Delete</a>
 				<a class="nav-item nav-link active" href="category.php">View categories</a>
 				<a class="nav-item nav-link active" data-bs-toggle="modal" data-bs-target="#myModal">Add category</a>
 			</div>

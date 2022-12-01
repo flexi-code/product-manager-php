@@ -10,27 +10,45 @@
 	$(document).ready(function(){
 		$('.js-basic-example-multiple').select2();
 		$('.js-example-placeholder-multiple').select2();
-	
 
-	var data0 = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+		$.ajax({
+			type: "GET",
+			url: "display_category.php?action=display",
+			dataType: "json",
+		}).done(function(data){
+			data.reverse().forEach(item => {
+				var html = `</optgroup>`;
+				var category_id = item.sub_cat_id.split(",");
+				var category_name = item.sub_cat.split(",");
+				var limit = category_id.length;
+				for(var i=limit-1;i>=0;i--) {
+					var temp = `<option value="`+category_id[i]+`">`+category_name[i]+`</option>`;
+					var html = temp.concat(html);
+				}
+				var open = `<optgroup value="${item.category_id}" label="${item.category_name}">`;
+				var html = open.concat(html);
+				$("#cat")[0].insertAdjacentHTML('beforeend', html);
+			});
+		});
 
-	var data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+		$.ajax({
+			type: 'get',
+			url: 'display_category.php?action=view_product',
+		}).done(function(response){
+			var temp = JSON.parse(response);
+			temp.forEach(product => {
+				// console.log(product);
+				let duplicate_category = product.pr_category.split(",");
+				let unique_category = new Set(duplicate_category);
 
-	var data1 = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
-
-		$("#product").select2({
-	        data: data,
-	        multiple: true
-    	});
-
-		$("#Category").select2({
-	        data: data,
-	        multiple: true
-    	});
-    	$("#Sub_category").select2({
-	        data: data1,
-	        multiple: true
-    	});
+				let duplicate_subcategory = product.pr_subcategory.split(",");
+				let unique_subcategory = new Set(duplicate_subcategory);
+			});
+			temp.forEach(item => {
+				var html = `<option value=${item.pr_id}>${item.pr_name}</option>`;
+				$('#product')[0].insertAdjacentHTML('beforeend',html);
+			});
+		});
 	});
 </script>
 <div class="container-fluid d-flex justify-content-right" style="margin:0;padding:0;box-sizing:border-box;">
@@ -40,23 +58,16 @@
 		</h3>
 		<hr class="text-dark">
 			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
-			data-placeholder="&#xF291;  Search product" id="product" style="font-family:Arial, FontAwesome">
-				<option value="option1">All</option>
+			data-placeholder="&#xF291;  Search product" id="product" style="font-family:Arial, FontAwesome" multiple>
 			</select>
 			<br>
 			<br>
 			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
-			data-placeholder="&#xF468;  Search category" id="Category" style="font-family:Arial, FontAwesome">
-				<option value="option1">All</option>
+			data-placeholder="&#xF468;  Search category" id="cat" style="font-family:Arial, FontAwesome;" multiple>
 			</select>
 			<br>
 			<br>
-			<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold" 
-			data-placeholder="&#xe4e6;  Search sub category" id="Sub_category" style="font-family:Arial, FontAwesome">
-				<option value="option1">All</option>
-			</select>
-			<br>
-			<br>
+			
 			<button type="button" id="search" class="btn btn-success btn-block" style="min-width: 100%;">Search</button>
 	</div>
 	<div class="container-fluid bg-info px-3">
