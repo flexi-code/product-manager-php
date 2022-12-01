@@ -39,18 +39,20 @@
 			var temp = JSON.parse(response);
 			temp.forEach(product => {
 				// console.log(product);
-				var duplicate_category = product.pr_category.split(",");
+				var duplicate_category = product.pr_category_name.split(",");
 				var unique_category = new Set(duplicate_category);
+				console.log(unique_category);
 
-				var duplicate_subcategory = product.pr_subcategory.split(",");
+				var duplicate_subcategory = product.pr_subcategory_name.split(",");
 				var unique_subcategory = new Set(duplicate_subcategory);
+				console.log(unique_subcategory);
 				
 				var html = `
 <span class="container  my-2" style="min-width: fit-content; max-width: 80vw; min-height: 78vh;">
     <p class="fw-bold my-2">${product.pr_name}</p>	
     	<span class="d-flex flex-column">
 		<h6 class="fw-bold">Category:  </h6>
-        	<div class="d-flex flex-row">`;
+        	<div class="d-flex flex-row"id="category${product.pr_id}">`;
 
 
 
