@@ -1,1 +1,18 @@
-SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(DISTINCT(pc.c_name)) as pr_category_name,GROUP_CONCAT(DISTINCT(pc.sc_name)) as pr_subcategory_name,p.pr_image, p.pr_status,p.pr_quantity,p.created_at,p.updated_at FROM product AS P RIGHT OUTER JOIN product_category AS pc on p.pr_id = pc.p_id WHERE pc.p_id = 3 OR pc.sc_id = 3 GROUP BY p.pr_id; 
+SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(DISTINCT(pc.c_name)) as pr_category_name,GROUP_CONCAT(DISTINCT(pc.sc_name)) as pr_subcategory_name,p.pr_image, p.pr_status,p.pr_quantity,p.created_at,p.updated_at FROM product AS P INNER JOIN product_category AS pc on p.pr_id = pc.p_id WHERE pc.p_id = 3 OR pc.sc_id = 3 GROUP BY p.pr_id; 
+
+
+IT DOES NOT RETURN GROUP_CONCAT OF ALL SUBCATEGOREIES EXCEPT FOR PASSED IN WHERE CLAUSE AND ID IN WHERE CLAUSE.
+
+SOLUTION: SELECT PRODUCT ID FOR SUBCATEGORY ID AND USE THIS QUERY TO GET RESULTS.
+
+                            ------------------------
+                            | FOR FUTURE REFERENCE |
+                            ------------------------
+SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(DISTINCT(pc.c_name)) as pr_category_name,GROUP_CONCAT(DISTINCT(pc.sc_name)) as pr_subcategory_name,p.pr_image, p.pr_status,p.pr_quantity,p.created_at,p.updated_at FROM product AS P INNER JOIN product_category AS pc on p.pr_id = pc.p_id WHERE pc.p_id IN(SELECT p.pr_id FROM product AS p INNER JOIN product_category AS pc on p.pr_id = pc.p_id where-----pc.sc_id = 3------ ) GROUP BY p.pr_id; 
+
+Run this query for every sub category_id you get in payload and also use below query for 
+getting product information based on product id.
+
+SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(DISTINCT(pc.c_name)) as pr_category_name,GROUP_CONCAT(DISTINCT(pc.sc_name)) as pr_subcategory_name,p.pr_image, p.pr_status,p.pr_quantity,p.created_at,p.updated_at FROM product AS P INNER JOIN product_category AS pc on p.pr_id = pc.p_id WHERE ---------pc.p_id = 5--------- GROUP BY p.pr_id; 
+
+#problem solved yet solution not implmented
