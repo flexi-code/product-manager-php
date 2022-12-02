@@ -1,0 +1,1 @@
+SELECT p.pr_id,p.pr_name,p.pr_description,p.pr_price,GROUP_CONCAT(DISTINCT(pc.c_name)) as pr_category_name,GROUP_CONCAT(DISTINCT(pc.sc_name)) as pr_subcategory_name,p.pr_image, p.pr_status,p.pr_quantity,p.created_at,p.updated_at FROM product AS P RIGHT OUTER JOIN product_category AS pc on p.pr_id = pc.p_id WHERE pc.p_id = 3 OR pc.sc_id = 3 GROUP BY p.pr_id; 

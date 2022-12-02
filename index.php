@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <div class="px-3 bg-light">
 	<?php
 	include "header.php";
@@ -7,10 +8,81 @@
 	include "connection.php";
 ?>
 <script type="text/javascript">
+	function get_category_string(category) {
+		let empty = new Array();
+		let category_array = Array.from(category);
+		let length = category_array.length;
+		let count = 1;
+		console.log(category_array);
+		//enter new div to array
+		empty.push('<div class="d-flex flex-row">');
+		category_array.forEach(item => {
+
+			// enter new category in same row  
+			if(count % 4 != 0) {
+				console.log(count,"-",item);
+
+				let category = `<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">${item}</p>`;
+				empty.push(category);
+				console.log(empty.join(" "));
+			}
+			//enter new category in new row
+			if(count % 4 == 0) {
+				empty.push('</div>');
+				empty.push('<div class="d-flex flex-row">');
+				let category = `<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">${item}</p>`;
+				empty.push(category);
+				console.log("new_row","-",count,"-",item);
+				console.log(empty.join(" "));
+			}
+			count += 1;
+		});
+		empty.push('</div>');
+		console.log(empty.join(" "));
+		return empty.join(" ");
+		console.warn("-----------------------------------------------");
+	}
+
+	function get_sub_category_string(sub_category) {
+		let empty = new Array();
+		let sub_category_array = Array.from(sub_category);
+		let length = sub_category_array.length;
+		let count = 1;
+		console.log(sub_category_array);
+		//enter new div to array
+		empty.push('<div class="d-flex flex-row">');
+		sub_category_array.forEach(item => {
+
+			// enter new category in same row  
+			if(count % 4 != 0) {
+				console.log(count,"-",item);
+
+				let sub_category = `<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">${item}</p>`;
+				empty.push(sub_category);
+				console.log(empty.join(" "));
+			}
+			//enter new category in new row
+			if(count % 4 == 0) {
+				empty.push('</div>');
+				empty.push('<div class="d-flex flex-row">');
+				let sub_category = `<p class="d-flex justify-content-center col-3 bg-primary fw-bolder br-3 mx-3 px-3 text-white rounded">${item}</p>`;
+				empty.push(sub_category);
+				console.log("new_row","-",count,"-",item);
+				console.log(empty.join(" "));
+			}
+			count += 1;
+		});
+		empty.push('</div>');
+		console.log(empty.join(" "));
+		return empty.join(" ");
+		console.warn("-----------------------------------------------");
+	}
+
 	$(document).ready(function () {
 		$('.js-basic-example-multiple').select2();
 		$('.js-example-placeholder-multiple').select2();
 
+		//code to view category
 		$.ajax({
 			type: "GET",
 			url: "display_category.php?action=display",
@@ -32,40 +104,97 @@
 			});
 		});
 
+
+		//code to view product details by default
 		$.ajax({
 			type: 'get',
 			url: 'display_category.php?action=view_product',
 		}).done(function (response) {
 			var temp = JSON.parse(response);
-			temp.forEach(product => {
-				// console.log(product);
-				var duplicate_category = product.pr_category_name.split(",");
-				var unique_category = new Set(duplicate_category);
-				console.log(unique_category);
 
-				var duplicate_subcategory = product.pr_subcategory_name.split(",");
-				var unique_subcategory = new Set(duplicate_subcategory);
-				console.log(unique_subcategory);
+			//let's print product data
+			temp.forEach(item => {
+
+				var category = item.pr_category_name.split(",");
+
+				var subcategory = item.pr_subcategory_name.split(",");
 				
 				var html = `
-<span class="container  my-2" style="min-width: fit-content; max-width: 80vw; min-height: 78vh;">
-    <p class="fw-bold my-2">${product.pr_name}</p>	
+<span class="container bg-white my-2" style="min-width: fit-content; max-width: 80vw; min-height: fit-content;">
+    <p class="fw-bold my-2">${item.pr_name}</p>	
     	<span class="d-flex flex-column">
 		<h6 class="fw-bold">Category:  </h6>
-        	<div class="d-flex flex-row"id="category${product.pr_id}">`;
+			${get_category_string(category)}
+		</span>
+		<br>
+		<span class="d-flex flex-column">
+		<h6 class="fw-bold">Sub-Category:  </h6>
+			${get_sub_category_string(subcategory)}
+		</span>
+		<hr>
+		<span class="container row">
+        <img src="product/${item.pr_image}" class="col-3 rounded thumbnail" style="max-height: 40vh; max-width: 40vh">
+        <span class="col-9 d-flex row" style="min-width: fit-content; min-height: 100%;">
+            <span class="row">
+                <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold">Price</h6>
+                    <h6>${item.pr_price} Rs.</h6>
+                </div>
+                <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold">Quantity</h6>
+                    <h6>${item.pr_quantity}</h6>
+                </div>
+            </span>
+            <span class="row">
+                <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold">Created at</h6>
+                    <h6>${item.created_at}</h6>
+                </div>
+                <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold">Updated at</h6>
+                    <h6>${item.updated_at}</h6>
+                </div>
+            </span>
+            <span class="row">
+                <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold">Status</h6>
+                    <h6>${item.pr_status}</h6>
+                </div>
+            </span>
+        </span>
+        <span class="col container">
+            <h6 class="my-2 font-weight-bold">Description</h6>
+			<span class="container px-3">
+                ${item.pr_description}
+            </span>
+        </span>
+    </span>
+</span>`;
+	
 
-
-
-
-
-
-
-
-				$("#product_catalog")[0].insertAdjacentHTML('beforeend',html);
+				$("#product_catalog").append(html);
 			});
+
+			// code to view product name in search bar
 			temp.forEach(item => {
 				var option = `<option value=${item.pr_id}>${item.pr_name}</option>`;
 				$('#product')[0].insertAdjacentHTML('beforeend', option);
+			});
+		});
+
+		//code to search product
+		$('#search_category').submit(function (event){
+			event.preventDefault();
+			var formdata = new FormData(this);
+			$.ajax({
+				type: "post",
+				url: "display_category.php?action=search_product",
+				data: formdata,
+				dataType: json,
+				contentType: false,
+				processData: false,
+			}).done(function(response) {
+				
 			});
 		});
 	});
@@ -76,35 +205,30 @@
 			Dashboard
 		</h3>
 		<hr class="text-dark">
+
+		<form id="search_product" method="POST" action="display_category.php?action=search_product">
 		<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold"
-			data-placeholder="&#xF291;  Search product" id="product" style="font-family:Arial, FontAwesome" multiple>
+			data-placeholder="&#xF291;  Search product" id="product" name = "product[]" style="font-family:Arial, FontAwesome" multiple>
 		</select>
 		<br>
 		<br>
 		<select class="select-basic-example-multiple js-example-placeholder-multiple form-control fw-bold"
-			data-placeholder="&#xF468;  Search category" id="cat" style="font-family:Arial, FontAwesome;" multiple>
+			data-placeholder="&#xF468;  Search category" id="cat" name = "category[]"style="font-family:Arial, FontAwesome;" multiple>
 		</select>
 		<br>
 		<br>
 
-		<button type="button" id="search" class="btn btn-success btn-block" style="min-width: 100%;">Search</button>
+		<button type="submit" id="search" class="btn btn-success btn-block" style="min-width: 100%;">Search</button>
+		</form>
+
 	</div>
 	<div class="container-fluid bg-info px-3">
 		<span class=" display-5 fw-bold d-flex text-white justify-content-center">
-			Welcome to product Manager
+			Welcome to Product Manager
 		</span>
 		<hr class="text-dark">
 
-		<div class="container bg-white d-flex flex-column" id="product_catalog">
-
-
-
-
-
-
-
-
-
+		<div class="container d-flex flex-column" id="product_catalog">
 		</div>
 	</div>
 </div>

@@ -57,8 +57,8 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="#">Product Manager</a>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="max-width: 100%; max-height: 100%;">
+		<a class="navbar-brand" href="index.php">Product Manager</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
 			aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
