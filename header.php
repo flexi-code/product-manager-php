@@ -34,6 +34,7 @@
 			/* IE and Edge */
 			scrollbar-width: none;
 			/* Firefox */
+			max-height: 100vh;
 		}
 
 		/* Hide scrollbar for IE, Edge and Firefox */
@@ -53,11 +54,10 @@
 			overflow-y: scroll;
 		}
 	</style>
-
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="max-width: 100%; max-height: 100%;">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="max-width: 100%; max-height: 10vh;">
 		<a class="navbar-brand" href="index.php">Product Manager</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
 			aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
