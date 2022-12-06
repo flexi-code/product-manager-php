@@ -66,7 +66,7 @@
 		$('.js-basic-example-multiple').select2();
 		$('.js-example-placeholder-multiple').select2();
 
-		//code to view category
+		//code to view category and sub category
 		$.ajax({
 			type: "GET",
 			url: "display_category.php?action=display",
@@ -105,7 +105,10 @@
 				
 				var html = `
 	<span class="container bg-white my-2" style="min-width: fit-content; max-width: 80vw; min-height: fit-content; margin: 3rem 0rem;">
+		<span class="d-flex justify-content-between">
 		<h3 class="fw-bold my-2">${item.pr_name}</h3>	
+		<a href="#" class="btn btn-primary">Edit</a>
+		</span>
 			<span class="d-flex flex-column">
 			<h6 class="fw-bold">Category:  </h6>
 				${get_category_string(category)}
@@ -169,7 +172,7 @@
 		$('#search_product').submit(function (event){
 			event.preventDefault();
 			var formdata = new FormData(this);
-			
+
 			if($('#product').val().length != 0 || $('#cat').val().length != 0) {
 			$.ajax({
 				type: 'post',
