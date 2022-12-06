@@ -16,7 +16,7 @@ include "connection.php";
 
 			$result3 = $con->query($sql3);
 			while($product_search_data = $result3->fetch_assoc()) {
-				$res['product_data'.$value] = $product_search_data;
+				array_push($data,$product_search_data);
 			}
 		}
 			

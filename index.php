@@ -104,7 +104,7 @@
 				var subcategory = item.pr_subcategory_name.split(",");
 				
 				var html = `
-	<span class="container bg-white my-2" style="min-width: fit-content; max-width: 80vw; min-height: fit-content;">
+	<span class="container bg-white my-2" style="min-width: fit-content; max-width: 80vw; min-height: fit-content; margin: 3rem 0rem;">
 		<h3 class="fw-bold my-2">${item.pr_name}</h3>	
 			<span class="d-flex flex-column">
 			<h6 class="fw-bold">Category:  </h6>
@@ -169,7 +169,8 @@
 		$('#search_product').submit(function (event){
 			event.preventDefault();
 			var formdata = new FormData(this);
-			console.log(formdata);
+			
+			if($('#product').val().length != 0 || $('#cat').val().length != 0) {
 			$.ajax({
 				type: 'post',
 				url: 'search_product.php',
@@ -178,14 +179,81 @@
 				contentType: false,
 				processData: false,
 			}).done(function(response) {
-				console.log("abc");
+				console.log(JSON.stringify(response));
+				$('#product_catalog').empty();
+				response.forEach(item => {
+  					// !!!! alert(Object.values(item)); object.values() to convert json to javascript array !!!!
+
+				var category = item.pr_category_name.split(",");
+
+				var subcategory = item.pr_subcategory_name.split(",");
+
+				var html = `
+				<span class="container bg-white my-2" style="min-width: fit-content; max-width: 80vw; min-height: fit-content; margin: 3rem 0rem;">
+					<span class="d-flex justify-content-between">
+						<h3 class="fw-bold my-2">${item.pr_name}</h3>	
+					</span>
+						<span class="d-flex flex-column">
+						<h6 class="fw-bold">Category:  </h6>
+							${get_category_string(category)}
+						</span>
+						<br>
+						<span class="d-flex flex-column">
+						<h6 class="fw-bold">Sub-Category:  </h6>
+							${get_sub_category_string(subcategory)}
+						</span>
+						<hr>
+						<span class="container row">
+						<img src="product/${item.pr_image}" class="col-3 rounded thumbnail" style="max-height: 40vh; max-width: 40vh">
+						<span class="col-9 d-flex row" style="min-width: fit-content; min-height: 100%;">
+							<span class="row">
+								<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+									<h6 class="fw-bold">Price</h6>
+									<h6>${item.pr_price} Rs.</h6>
+								</div>
+								<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+									<h6 class="fw-bold">Quantity</h6>
+									<h6>${item.pr_quantity}</h6>
+								</div>
+							</span>
+							<span class="row">
+								<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+									<h6 class="fw-bold">Created at</h6>
+									<h6>${item.created_at}</h6>
+								</div>
+								<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+									<h6 class="fw-bold">Updated at</h6>
+									<h6>${item.updated_at}</h6>
+								</div>
+							</span>
+							<span class="row">
+								<div class="col-6 d-flex flex-column align-items-center justify-content-center">
+									<h6 class="fw-bold">Status</h6>
+									<h6>${item.pr_status}</h6>
+								</div>
+							</span>
+						</span>
+						<span class="col container">
+							<h6 class="my-2 font-weight-bold">Description</h6>
+							<span class="container px-3">
+								${item.pr_description}
+							</span>
+						</span>
+					</span>
+				</span>`;
+		
+				$("#product_catalog").append(html);
+				});
 			});
+			} else {
+				alert(" ;-) kuch to gadbad hai daya!");
+			}
 		});
 	});
 	$(".selection").css({"display":"inline-block","min-height":"5vh"});
 </script>
 <div class="container-fluid d-flex justify-content-right" style="position: fixed;margin:0;padding:0;box-sizing:border-box;">
-	<div id="sidebar" class="bg-warning	px-3" style="min-width: 22%; min-height: 90vh; position: relative;">
+	<div id="sidebar" class="bg-warning	px-3" style="min-width: 22%; min-height:92vh;max-height: auto; position: relative;">
 		<h3 class=" fw-bold text-white d-flex justify-content-center">
 			Dashboard
 		</h3>
@@ -213,7 +281,7 @@
 		</span>
 		<hr class="text-dark">
 
-		<div class="container d-flex flex-column" id="product_catalog">
+		<div class="container d-flex flex-column" id="product_catalog" style="overflow-y:scroll;">
 		</div>
 	</div>
 </div>
